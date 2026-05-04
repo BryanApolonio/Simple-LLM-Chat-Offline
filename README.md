@@ -59,7 +59,7 @@ pip install PyQt6 requests --break-system-packages
 
 1. **Run the application:**
 ```bash
-python main.py
+python3 main.py
 ```
 
 2. **Model Initialization:**
