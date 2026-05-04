@@ -34,36 +34,35 @@ To run this project on your local machine, you need:
 
 ### Windows
 ```powershell
+git clone https://github.com/BryanApolonio/Simple-LLM-Chat-Offline.git
+cd Simple-LLM-Chat-Offline
 pip install -r requirements.txt --break-system-packages
 ```
 
 ### Ubuntu/Debian
 ```bash
-sudo apt update
-sudo apt install python3-pip python3-pyqt6 -y
+sudo apt install python3-pip python3-pyqt6 git -y
+git clone https://github.com/BryanApolonio/Simple-LLM-Chat-Offline.git
+cd Simple-LLM-Chat-Offline
 pip install -r requirements.txt --break-system-packages
 ```
 
 ### macOS (Apple Silicon)
 ```bash
+git clone https://github.com/BryanApolonio/Simple-LLM-Chat-Offline.git
+cd Simple-LLM-Chat-Offline
 CMAKE_ARGS="-DGGML_METAL=on" pip install llama-cpp-python --break-system-packages
 pip install PyQt6 requests --break-system-packages
 ```
 
 ## Getting Started
 
-1. **Clone the repository:**
-```bash
-git clone https://github.com/BryanApolonio/Simple-LLM-Chat-Offline.git
-cd Simple-LLM-Chat-Offline
-```
-
-2. **Run the application:**
+1. **Run the application:**
 ```bash
 python main.py
 ```
 
-3. **Model Initialization:**
+2. **Model Initialization:**
 Click on **"Download Qwen 1.5B"** or use the **"Browse GGUF"** button to load a model you already have.
 
 ## Project Structure
