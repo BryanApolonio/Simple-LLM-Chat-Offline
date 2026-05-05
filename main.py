@@ -8,27 +8,37 @@ from PyQt6.QtWidgets import (
     QProgressBar, QDialog, QDoubleSpinBox, QSpinBox
 )
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
+from PyQt6.QtGui import QPixmap, QPalette, QBrush
 from llama_cpp import Llama
 
 DARK_STYLE = """
     QWidget {
-        background-color: #121212;
+        background-color: transparent;
         font-family: 'Segoe UI', Arial, sans-serif;
-        color: #e0e0e0;
+        color: #121212;
         outline: none;
     }
 
-    QDialog {
-        background-color: #121212;
+    QLineEdit, QTextEdit, QDoubleSpinBox, QSpinBox, QDialog {
+        background-color: rgba(51, 51, 51, 220); 
+        border: 1px solid #3d3d3d;
+        border-radius: 8px;
+        padding: 8px;
+        color: #fff;
+        selection-background-color: #3d3d3d;
     }
 
-    QTextEdit, QLineEdit, QDoubleSpinBox, QSpinBox {
-        background-color: #2a2a2a; 
-        border: 1px solid #3d3d3d;
-        border-radius: 6px;
-        padding: 8px;
-        color: #ffffff;
-        selection-background-color: #0573e1;
+    QProgressBar {
+        border-radius: 5px;
+        background-color: rgba(51, 51, 51, 220);
+        text-align: center;
+        color: #808080; 
+        height: 30px;
+    }
+
+    QProgressBar::chunk {
+        background-color: #fff;
+        border-radius: 5px;
     }
 
     QAbstractSpinBox::up-button, QAbstractSpinBox::down-button {
@@ -37,7 +47,7 @@ DARK_STYLE = """
     }
 
     QPushButton {
-        background-color: #333333;
+        background-color: rgba(51, 51, 51, 220);
         color: #ffffff;
         border: 1px solid #444444;
         border-radius: 6px;
@@ -46,34 +56,45 @@ DARK_STYLE = """
     }
 
     QPushButton:hover {
-        background-color: #444444;
-        border: 1px solid #0573e1;
+        background-color: #333333;
+    }
+
+    QMenu {
+        background-color: rgba(30, 30, 30, 220);
+        padding: 5px;
+        color: #ffffff;
     }
 
     QLabel { 
         color: #ffffff;
         font-size: 13px;
         margin-bottom: 2px;
+        background: transparent;
     }
 """
 
-MODEL_FILENAME = "qwen2.5-1.5b-instruct.gguf"
-DEFAULT_MODEL_URL = "https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q4_k_m.gguf"
+MODEL_FILENAME = "Qwen3-1.7b-Q8_0.gguf"
+DEFAULT_MODEL_URL = "https://huggingface.co/Qwen/Qwen3-1.7B-GGUF/resolve/main/Qwen3-1.7B-Q8_0.gguf"
 
 class SettingsDialog(QDialog):
     def __init__(self, current_settings):
         super().__init__()
         self.setWindowTitle("Model Configuration")
         self.setFixedSize(400, 480)
+        
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, False) 
         self.setStyleSheet(DARK_STYLE)
+        
         self.settings = current_settings
         self.init_ui()
 
     def init_ui(self):
         layout = QVBoxLayout()
+        
         layout.addWidget(QLabel("System Prompt:"))
         self.sys_prompt_input = QTextEdit()
         self.sys_prompt_input.setPlainText(self.settings['system_prompt'])
+        self.sys_prompt_input.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.sys_prompt_input.setMaximumHeight(100)
         layout.addWidget(self.sys_prompt_input)
 
@@ -133,24 +154,52 @@ class DownloadThread(QThread):
 class Chat(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Simple LLM Chat Offline - Local Chat")
+        self.setWindowTitle("LLM Chat Offline - Local Chat")
         self.setGeometry(100, 100, 700, 700)
+        
+        self.bg_label = QLabel(self)
+        self.background()
+
         self.setStyleSheet(DARK_STYLE)
 
         self.llm = None
         self.last_context = ""
         self.config = {
-            'system_prompt': "Assistant running on software maintained by Bryan Apolonio",
-            'temperature': 0.3,
+            'system_prompt': "You are a professional and versatile AI assistant. This software was created and is maintained by Bryan Apolonio.",
+            'temperature': 0.7,
             'penalty': 1.1,
-            'max_tokens': 400
+            'max_tokens': 1024
         }
 
         self.init_ui()
         self.check_existing_model()
 
+    def background(self):
+            if os.path.exists("./img/background.png"):
+                self.full_pixmap = QPixmap("./img/background.png")
+                self.bg_label.setAlignment(Qt.AlignmentFlag.AlignCenter) 
+                self.apply_scaled_background()
+                self.bg_label.lower()
+            else:
+                self.bg_label.setStyleSheet("background-color: #000000;")
+
+    def apply_scaled_background(self):
+        if hasattr(self, 'full_pixmap'):
+            scaled_pixmap = self.full_pixmap.scaled(
+                self.size(), 
+                Qt.AspectRatioMode.KeepAspectRatioByExpanding, 
+                Qt.TransformationMode.SmoothTransformation
+            )
+            self.bg_label.setPixmap(scaled_pixmap)
+            self.bg_label.resize(self.size())
+
+    def resizeEvent(self, event):
+            self.apply_scaled_background()
+            super().resizeEvent(event)
+
     def init_ui(self):
-        layout = QVBoxLayout()
+        main_layout = QVBoxLayout()
+        
         header_layout = QHBoxLayout()
         self.lbl_status = QLabel("Ready.")
         
@@ -188,23 +237,23 @@ class Chat(QWidget):
         input_layout.addWidget(self.input_field)
         input_layout.addWidget(btn_send)
 
-        layout.addLayout(header_layout)
-        layout.addWidget(self.progress_bar)
-        layout.addWidget(self.chat_display)
-        layout.addLayout(input_layout)
-        self.setLayout(layout)
+        main_layout.addLayout(header_layout)
+        main_layout.addWidget(self.progress_bar)
+        main_layout.addWidget(self.chat_display)
+        main_layout.addLayout(input_layout)
+        self.setLayout(main_layout)
 
     def check_existing_model(self):
         if os.path.exists(MODEL_FILENAME):
             self.btn_action.setText("Start Model")
             self.lbl_status.setText("Local model detected.")
         else:
-            self.btn_action.setText("Download Qwen 1.5B")
+            self.btn_action.setText("Download Qwen 1.7B")
 
     def open_settings(self):
         dialog = SettingsDialog(self.config)
         if dialog.exec():
-            self.chat_display.append("<i>System: Settings updated successfully.</i>")
+            self.chat_display.append("<i style='color: #888888;'>System: Settings updated successfully.</i>")
 
     def handle_model_action(self):
         if os.path.exists(MODEL_FILENAME):
@@ -234,17 +283,16 @@ class Chat(QWidget):
 
     def setup_llm(self, path):
         try:
-            self.chat_display.append(f"<i>System: Initializing {os.path.basename(path)}...</i>")
+            self.chat_display.append(f"<i style='color: #888888;'>System: Initializing {os.path.basename(path)}...</i>")
             QApplication.processEvents()
             self.llm = Llama(model_path=path, n_ctx=2048, n_threads=4, verbose=False)
             self.lbl_status.setText(f"Active: {os.path.basename(path)}")
-            self.chat_display.append("<b>System:</b> Model is online.\n")
+            self.chat_display.append("<b style='color: #888888;'>System:</b> Model is online.\n")
         except Exception as e:
-            self.chat_display.append(f"<b>Error:</b> {str(e)}")
+            self.chat_display.append(f"<b style='color: #ff4444;'>Error:</b> {str(e)}")
 
     def send_query(self):
         text = self.input_field.text().strip()
-        
         if not text:
             return
 
@@ -285,7 +333,7 @@ class Chat(QWidget):
             self.chat_display.append("") 
             
         except Exception as e:
-            self.chat_display.append(f"\n<b>System Error:</b> {str(e)}")
+            self.chat_display.append(f"\n<b style='color: #ff4444;'>System Error:</b> {str(e)}")
 
     def scroll_to_bottom(self):
         self.chat_display.verticalScrollBar().setValue(
