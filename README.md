@@ -2,7 +2,7 @@
 A high-performance local LLM interface powered by `llama-cpp-python` and `PyQt6`, designed for private, offline intelligence.
 
 <p align="center">
-  <img src="./img/start.png" width="98%" />
+  <img src="./img/start.png"/>
 </p>
 
 ## Overview
