@@ -14,7 +14,6 @@ The application features an automated model downloader and a dynamic parameter i
 ## Features
 - **Local Inference:** 100% offline. Your data never leaves your machine.
 - **Glass-morphism UI:** Modern interface with support for custom background images and translucent window elements.
-- **Upgraded Intelligence:** Pre-configured for the **Qwen 3** architecture, providing superior reasoning in a compact local format.
 - **Context Persistence:** Maintains a conversation history buffer, allowing the model to remember previous interactions within the session.
 - **Automated Setup:** Built-in downloader for the Qwen 3 1.7B (GGUF) optimized model.
 - **Real-time Streaming:** Smooth token-by-token text generation using PyQt6 signals for a responsive UI.
