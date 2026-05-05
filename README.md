@@ -1,4 +1,4 @@
-# Simple-LLM-Chat-Offline
+# LLM-Chat-Offline
 A high-performance local LLM interface powered by `llama-cpp-python` and `PyQt6`, designed for private, offline intelligence.
 
 <p align="center">
@@ -11,7 +11,7 @@ A high-performance local LLM interface powered by `llama-cpp-python` and `PyQt6`
 </p>
 
 ## Overview
-**Simple-LLM-Chat-Offline** is a minimalist desktop client for Large Language Models (LLMs). It allows users to run models like Qwen 2.5 locally without relying on external APIs. The software focuses on speed, privacy, and a clean, terminal-inspired interface.
+**LLM-Chat-Offline** is a minimalist desktop client for Large Language Models (LLMs). It allows users to run models like Qwen 2.5 locally without relying on external APIs. The software focuses on speed, privacy, and a clean, terminal-inspired interface.
 
 The application features an automated model downloader and a dynamic parameter injection system, ensuring a seamless experience from setup to inference.
 
@@ -34,23 +34,23 @@ To run this project on your local machine, you need:
 
 ### Windows
 ```powershell
-git clone https://github.com/BryanApolonio/Simple-LLM-Chat-Offline.git
-cd Simple-LLM-Chat-Offline
+git clone https://github.com/BryanApolonio/LLM-Chat-Offline.git
+cd LLM-Chat-Offline
 pip install -r requirements.txt --break-system-packages
 ```
 
 ### Ubuntu/Debian
 ```bash
 sudo apt install python3-pip python3-pyqt6 git -y
-git clone https://github.com/BryanApolonio/Simple-LLM-Chat-Offline.git
-cd Simple-LLM-Chat-Offline
+git clone https://github.com/BryanApolonio/LLM-Chat-Offline.git
+cd LLM-Chat-Offline
 pip install -r requirements.txt --break-system-packages
 ```
 
 ### macOS (Apple Silicon)
 ```bash
-git clone https://github.com/BryanApolonio/Simple-LLM-Chat-Offline.git
-cd Simple-LLM-Chat-Offline
+git clone https://github.com/BryanApolonio/LLM-Chat-Offline.git
+cd LLM-Chat-Offline
 CMAKE_ARGS="-DGGML_METAL=on" pip install llama-cpp-python --break-system-packages
 pip install PyQt6 requests --break-system-packages
 ```
