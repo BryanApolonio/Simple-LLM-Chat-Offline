@@ -254,8 +254,8 @@ class Chat(QWidget):
             return
             
         self.input_field.clear()
-        self.chat_display.append(f"<b style='color: #0573e1;'>You:</b> {text}")
-        self.chat_display.append("<b style='color: #00ff7f;'>AI:</b> ")
+        self.chat_display.append(f"<b style='color: #bbbbbb;'>You:</b> {text}")
+        self.chat_display.append("<b style='color: #ffffff;'>AI:</b> ")
         self.scroll_to_bottom()
 
         prompt = f"System: {self.config['system_prompt']}\n{self.last_context}User: {text}\nAI:"
